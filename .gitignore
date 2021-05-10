@@ -1,3 +1,6 @@
 /.bsp
 /.idea
+/.gradle
+*.DS_Store
 target
+*.sc
