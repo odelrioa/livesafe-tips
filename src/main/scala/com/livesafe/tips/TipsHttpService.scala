@@ -15,9 +15,9 @@ class TipsHttpService(tipService: TipService) extends Directives with PlayJsonSu
   val routes: Route = {
     pathPrefix("tips") {
       get {
-        pathEnd { complete(tipService.getTips()) } ~
+        pathEnd { complete(tipService.getAll()) } ~
         path(JavaUUID) { tipId =>
-          onComplete(tipService.getTip(tipId)) {
+          onComplete(tipService.getById(tipId)) {
             case Success(tip) => complete(tip)
             case Failure(ex: Repository.RecordNotFoundException) => complete(StatusCodes.NotFound)
             case Failure(ex) => complete(StatusCodes.InternalServerError)
