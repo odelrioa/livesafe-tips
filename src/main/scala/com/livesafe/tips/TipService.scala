@@ -2,33 +2,27 @@ package com.livesafe.tips
 
 import java.util.UUID
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import com.livesafe.tips.Service.Tip
+import com.livesafe.tips.repositories.TipRepository
+
 import scala.concurrent.Future
 
-import com.livesafe.tips.TipService.Tip
+trait Service {
 
-trait TipService {
-
-  def getTips(): Future[List[Tip]]
-  def getTip(id: UUID): Future[Tip]
+  def getAll(): Future[List[Tip]]
+  def getById(id: UUID): Future[Tip]
 
 }
 
-class UnimplementedTipService extends TipService {
+class TipService(tipRepository: TipRepository) extends Service {
 
   /**
    * FIXME: Replace this with your implementation. This stub is provided as an example of how to load the legacy data from [[LegacyTipsService]]
    *
    * @return
    */
-  def getTips(): Future[List[Tip]] = {
-    for {
-      rawLegacy1Tips <- LegacyTipsService.fetchLegacy1Tips
-      rawLegacy2Tips <- LegacyTipsService.fetchLegacy2Tips
-    } yield {
-      val rawLegacyData = ("Raw legacy data" ::  rawLegacy1Tips :: rawLegacy2Tips :: Nil).mkString("\n")
-      List(rawLegacyData)
-    }
+  def getAll(): Future[List[Tip]] = {
+    tipRepository.getAll()
   }
 
     /**
@@ -36,20 +30,15 @@ class UnimplementedTipService extends TipService {
      *
      * @return
    */
-  def getTip(id: UUID): Future[Tip] = {
-    for {
-      rawLegacy1Tips <- LegacyTipsService.fetchLegacy1Tips
-      rawLegacy2Tips <- LegacyTipsService.fetchLegacy2Tips
-    } yield {
-      ("Raw legacy data" :: rawLegacy1Tips :: rawLegacy2Tips :: Nil).mkString("\n")
-    }
+  def getById(id: UUID): Future[Tip] = {
+    tipRepository.get(id.toString)
   }
 
 }
 
-object TipService {
+object Service {
   /**
    * FIXME: We need a proper data model for 'Tip'!
    */
-  type Tip = String
+  type Tip = com.livesafe.tips.models.Tip
 }
